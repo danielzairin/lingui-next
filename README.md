@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NextJS i18n with Lingui
 
-## Getting Started
+An i18n (internationalization) implementation for [NextJS](https://nextjs.org) using [Lingui](https://lingui.dev/).
 
-First, run the development server:
+### Locale Detection
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The logic for detecting which locale to use is in `src/app/middleware.ts`.
+
+The locale is chosen based on this order:
+
+1. Locale from pathname
+2. Locale from a request cookie
+3. Locale from HTTP headers
+
+### Navigation with Link, useRouter and redirect
+
+NextJS's `<Link />`, client-side `useRouter()` hook and server-side `redirect()` function were extended to include the current locale.
+
+For example, you can write the href as `<Link href="/about-us" />` and the final href will be **/en/about-us**
+
+These components can be imported with the following statements:
+
+```
+import { Link } from "@/i18n/link";
+import { useRouter } from "@/i18n/client";
+import { redirect } from "@/i18n/redirect";
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Translating Messages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Lingui has tutorials on how to use it's APIs for translating React apps:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. React (Client Components) Tutorial - https://lingui.dev/tutorials/react
+2. React Server Components Tutorial - https://lingui.dev/tutorials/react-rsc
 
-## Learn More
+In this codebase, you can use the following npm scripts to extract and compile messages:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+npm run lingui:extract
+npm run lingui:compile
+```
