@@ -48,3 +48,5 @@ export const useRouter: typeof nextjs.useRouter = () => {
     },
   };
 };
+
+export { useLingui } from "@lingui/react";

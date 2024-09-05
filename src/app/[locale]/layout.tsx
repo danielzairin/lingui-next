@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { setLingui } from "@/i18n/server";
+import { getLingui } from "@/i18n/server";
 import { LinguiProvider } from "@/i18n/client";
-import { useLingui } from "@lingui/react";
 import { Locale } from "@/i18n/vars";
 
 export const metadata: Metadata = {
@@ -18,8 +17,7 @@ type Props = {
 };
 
 export default function RootLayout({ children, params }: Props) {
-  setLingui(params.locale);
-  const { i18n } = useLingui();
+  const { i18n } = getLingui();
 
   return (
     <html lang={params.locale}>

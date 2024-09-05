@@ -1,6 +1,11 @@
 import { match } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
-import { DEFAULT_LOCALE, Locale, LOCALE_COOKIE } from "./i18n/vars";
+import {
+  DEFAULT_LOCALE,
+  Locale,
+  LOCALE_COOKIE,
+  LOCALE_HEADER_KEY,
+} from "./i18n/vars";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
@@ -44,7 +49,10 @@ function middleware(req: NextRequest, ev: NextFetchEvent) {
     return res;
   }
 
-  const res = NextResponse.next();
+  const reqHeaders = new Headers(req.headers);
+  reqHeaders.set(LOCALE_HEADER_KEY, locale);
+
+  const res = NextResponse.next({ request: { headers: reqHeaders } });
   res.cookies.set(LOCALE_COOKIE, locale);
   return res;
 }

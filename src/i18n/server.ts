@@ -3,8 +3,13 @@ import { getI18n, setI18n as setLinguiI18n } from "@lingui/react/server";
 import { messages as enMessages } from "./en/messages";
 import { messages as msMessages } from "./ms/messages";
 import * as nextjs from "next/navigation";
-import { cookies } from "next/headers";
-import { DEFAULT_LOCALE, Locale, LOCALE_COOKIE } from "./vars";
+import { cookies, headers } from "next/headers";
+import {
+  DEFAULT_LOCALE,
+  Locale,
+  LOCALE_COOKIE,
+  LOCALE_HEADER_KEY,
+} from "./vars";
 
 const englishI18n = setupI18n({
   locale: "en",
@@ -27,14 +32,23 @@ function getI18nByLocale(locale: Locale): I18n {
   return bahasaI18n;
 }
 
-export function setLingui(locale: Locale) {
-  setLinguiI18n(getI18nByLocale(locale));
+function getRequestLocale(): Locale {
+  const locale = headers().get(LOCALE_HEADER_KEY);
+  if (!locale) {
+    throw Error("missing locale from header");
+  }
+  return locale as Locale;
 }
 
 export function getLingui() {
   const i18nCtx = getI18n();
   if (!i18nCtx) {
-    throw Error("no i18nCtx");
+    setLinguiI18n(getI18nByLocale(getRequestLocale()));
+    const newI18nCtx = getI18n();
+    if (!newI18nCtx) {
+      throw Error("failed to set i18n context");
+    }
+    return newI18nCtx;
   }
   return i18nCtx;
 }
