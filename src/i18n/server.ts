@@ -35,20 +35,20 @@ function getI18nByLocale(locale: Locale): I18n {
 function getRequestLocale(): Locale {
   const locale = headers().get(LOCALE_HEADER_KEY);
   if (!locale) {
-    throw Error("missing locale from header");
+    throw Error(`missing '${LOCALE_HEADER_KEY}' value from http header`);
   }
   return locale as Locale;
 }
 
 export function getLingui() {
-  const i18nCtx = getI18n();
+  let i18nCtx = getI18n();
   if (!i18nCtx) {
+    // set the i18n context then get it again
     setLinguiI18n(getI18nByLocale(getRequestLocale()));
-    const newI18nCtx = getI18n();
-    if (!newI18nCtx) {
-      throw Error("failed to set i18n context");
+    i18nCtx = getI18n();
+    if (!i18nCtx) {
+      throw Error("failed to get i18n context");
     }
-    return newI18nCtx;
   }
   return i18nCtx;
 }
